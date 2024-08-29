@@ -47,4 +47,4 @@ gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 ## Imagem do tanque atual
 
 
-![](docs/tanque.png.png)
+![](./docs/tanque.png)
