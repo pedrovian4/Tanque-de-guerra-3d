@@ -15,3 +15,11 @@ void Turret::draw() {
 void Turret::rotate(float angle) {
     rotationAngle += angle;
 }
+
+void Turret::setRotation(float angle) {
+    rotationAngle = angle;
+}
+
+float Turret::getRotation() const {
+    return rotationAngle;
+}

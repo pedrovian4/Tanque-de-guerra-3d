@@ -14,6 +14,7 @@ float cameraYRotation = 0.0f;
 float cameraXRotation = 20.0f;
 float lastMouseX, lastMouseY;
 bool firstMouse = true;
+Scene scene;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     if (height == 0) height = 1;
@@ -41,6 +42,7 @@ void motions(GLFWwindow* window, Tank& tank) {
             cameraXRotation = 89.0f;
         }
     }
+
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
         cameraYRotation -= rotationSpeed;
     }
@@ -49,16 +51,17 @@ void motions(GLFWwindow* window, Tank& tank) {
     }
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        tank.rotateTurret(turretRotationStep); //  sentido horário
-    }
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        tank.rotateTurret(-turretRotationStep); //  sentido anti-horário
-    }
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         tank.move(1.0f); // Move para frente
     }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
         tank.move(-1.0f); // Move para trás
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        tank.rotate(-1.0f); // manobra pra direita
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        tank.rotate(2.0f); // manobra pra esquerda
     }
 
     glfwPostEmptyEvent();
@@ -72,6 +75,27 @@ void updateCameraPosition(float &cameraX, float &cameraY, float &cameraZ) {
     cameraZ = cameraDistance * cos(glm::radians(cameraXRotation)) * sin(glm::radians(cameraYRotation));
 }
 
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    static float lastX = 400, lastY = 300; 
+    float offsetX = xpos - lastX;
+    lastX = xpos;
+    lastY = ypos;
+
+    float sensitivity = 0.1f; 
+    float rotationChange = offsetX * sensitivity;
+
+    
+    scene.tank.setTurretRotation(scene.tank.getTurretRotation() + rotationChange);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        float turretRotation = scene.tank.getTurretRotation();
+        float targetX = scene.tank.getX() + cos(turretRotation * M_PI / 180.0f);
+        float targetZ = scene.tank.getZ() + sin(turretRotation * M_PI / 180.0f);
+        scene.tank.moveTo(targetX, targetZ);
+    }
+}
 
 
 int main() {
@@ -84,7 +108,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "Esse negócio foi escroto que nem o GPT tankou", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Tanque 3D de guerra", nullptr, nullptr);
     if (!window) {
         std::cerr << "Falha ao criar a janela GLFW" << std::endl;
         glfwTerminate();
@@ -93,6 +117,9 @@ int main() {
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Falha ao inicializar GLAD" << std::endl;
@@ -103,9 +130,6 @@ int main() {
 
     framebuffer_size_callback(window, 800, 600);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); 
-
-    Scene scene;
     
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
