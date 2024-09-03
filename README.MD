@@ -47,4 +47,4 @@ gluLookAt(cameraX, cameraY, cameraZ, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
 ## Imagem do tanque atual
 
 
-![](./docs/tanque.png)
+![](./docs/Screencast%20from%2009-03-2024%2012:22:00%20AM.webm)

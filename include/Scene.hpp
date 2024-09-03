@@ -7,6 +7,9 @@ class Scene {
         Scene();
         void draw();
         void update();
-    private:
+        void rotateTurret(float angle);
         Tank tank;
+    private:
+        void drawTerrain(); 
+        void drawTree(float x, float y, float z); 
 };

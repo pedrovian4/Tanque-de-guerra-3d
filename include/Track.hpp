@@ -2,7 +2,7 @@
 class Track {
 public:
     Track();
-    void draw();
+    void draw(float wheelRotation);
     void move(float speed);
 
 private:

@@ -5,6 +5,9 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Tank.hpp"
+
+
 
 float cameraDistance = 5.0f;
 float cameraYRotation = 0.0f;
@@ -21,36 +24,55 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glMatrixMode(GL_MODELVIEW);
 }
 
-void mouse_motions(GLFWwindow* window, double x, double y) {
-    if (firstMouse) {
-        lastMouseX = x;
-        lastMouseY = y;
-        firstMouse = false; // bug fudido
-    }
-    float xOffset = x - lastMouseX;
-    float yOffset = y - lastMouseY;
-    lastMouseX = x;
-    lastMouseY = y;
+void motions(GLFWwindow* window, Tank& tank) {
+    float rotationSpeed = 1.0f; // Velocidade de rotação para a câmera
+    float turretRotationStep = 3.0f; // Velocidade de rotação da torreta
 
-    float sensivity = 0.1f;
-    xOffset *= sensivity;
-    yOffset *= sensivity;
-    cameraYRotation += xOffset;
-    cameraXRotation += yOffset;
+    // Controle da câmera com as setas
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
+        cameraXRotation -= rotationSpeed;
+        if (cameraXRotation < -89.0f) {
+            cameraXRotation = -89.0f;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+        cameraXRotation += rotationSpeed;
+        if (cameraXRotation > 89.0f) {
+            cameraXRotation = 89.0f;
+        }
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+        cameraYRotation -= rotationSpeed;
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+        cameraYRotation += rotationSpeed;
+    }
 
-    if (cameraXRotation > 89.0f) {
-        cameraXRotation = 89.0f;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
+        tank.rotateTurret(turretRotationStep); //  sentido horário
     }
-    if (cameraXRotation < -89.0f) {
-        cameraXRotation = -89.0f;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
+        tank.rotateTurret(-turretRotationStep); //  sentido anti-horário
     }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
+        tank.move(1.0f); // Move para frente
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
+        tank.move(-1.0f); // Move para trás
+    }
+
+    glfwPostEmptyEvent();
 }
+
+
 
 void updateCameraPosition(float &cameraX, float &cameraY, float &cameraZ) {
     cameraX = cameraDistance * cos(glm::radians(cameraXRotation)) * cos(glm::radians(cameraYRotation));
-    cameraY = cameraDistance * sin(glm::radians(cameraXRotation));
+    cameraY = cameraDistance * sin(glm::radians(cameraXRotation)) - 0.1 ;
     cameraZ = cameraDistance * cos(glm::radians(cameraXRotation)) * sin(glm::radians(cameraYRotation));
 }
+
+
 
 int main() {
     if (!glfwInit()) {
@@ -62,7 +84,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
 
-    GLFWwindow* window = glfwCreateWindow(800, 600, "The mini tank", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(800, 600, "Esse negócio foi escroto que nem o GPT tankou", nullptr, nullptr);
     if (!window) {
         std::cerr << "Falha ao criar a janela GLFW" << std::endl;
         glfwTerminate();
@@ -71,7 +93,6 @@ int main() {
 
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    glfwSetCursorPosCallback(window, mouse_motions); 
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Falha ao inicializar GLAD" << std::endl;
@@ -85,10 +106,10 @@ int main() {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL); 
 
     Scene scene;
-
+    
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+        motions(window, scene.tank); 
         float cameraX, cameraY, cameraZ;
         updateCameraPosition(cameraX, cameraY, cameraZ);
         glLoadIdentity();
@@ -97,7 +118,6 @@ int main() {
                   0.0, 1.0, 0.0);
 
         scene.draw();
-
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
