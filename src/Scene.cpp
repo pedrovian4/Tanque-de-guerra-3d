@@ -33,6 +33,7 @@ void Scene::drawTerrain() {
 void Scene::drawTree(float x, float y, float z) {
     glPushMatrix();
     glTranslatef(x, y, z); 
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     Helpers::drawCylinder(0.55f, 0.27f, 0.07f,
                           0.0f, 0.0f, 0.0f, 
                           0.1f, 1.0f, 
@@ -40,9 +41,10 @@ void Scene::drawTree(float x, float y, float z) {
     glPopMatrix();
 
     glPushMatrix();
-    glTranslatef(x, y, z+1.0f); 
+    glTranslatef(x, y, z); 
+    glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
     Helpers::drawCylinder(0.0f, 0.5f, 0.0f, 
-                          0.0f, 0.0f, 0.0f, 
+                          0.0f, 0.0f, -0.5f, 
                           0.5f, 0.8f, 
                           1.0f, 1.0f); 
     glPopMatrix();
