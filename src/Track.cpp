@@ -5,9 +5,11 @@
 Track::Track() : speed(0.0f) {}
 
 void Track::draw(float wheelRotation) {
-    Helpers::drawParallelepiped(0.0f, 0.4f, 0.1f,
-                                0.0f, -0.55f, 0.0f, 
-                                2.5f, 0.2f, 1.2f);  
+
+    Helpers::drawParallelepiped(0.0f, 0.4f, 0.1f, // RGB
+                                0.0f, -0.55f, 0.0f,  //X,Y,Z
+                                2.5f, 0.2f, 1.2f);  // Largura, altura e escala
+
     float wheelRadius = 0.3f;    // Raio das rodas
     float wheelWidth = 0.1f;     // Largura das rodas
     float wheelYPos = -0.65f;    // Posição vertical das rodas (abaixo da esteira)

@@ -9,8 +9,11 @@ Tank::Tank() : x(0.0f), y(0.0f), z(0.0f), rotationAngle(0.0f), speed(0.0f), whee
 void Tank::draw() {
     glPushMatrix();
     glTranslatef(x, y, z); 
+    // Rotação usando quaternions
     glRotatef(rotationAngle, 0.0f, 1.0f, 0.0f); 
-    Helpers::drawParallelepiped(0.0f, 0.1f, 0.0f, 0.0f, -0.2f, 0.0f, 2.0f, 0.5f, 1.0f); 
+    Helpers::drawParallelepiped(0.0f, 0.1f, 0.0f,// RGB 
+    0.0f, -0.2f, 0.0f, // X,Y,Z
+    2.0f, 0.5f, 1.0f); // largura, altura e escala
 
     turret.draw(); 
     track.draw(wheelRotation); 
@@ -20,7 +23,10 @@ void Tank::draw() {
 
 void Tank::move(float newSpeed) {
     speed = newSpeed;
-    // EU nao sei porque tem que ficar negativo aqui
+    /**
+     * Tem que multiplicar por -1 aqui porque o open GL  usa a rega da mão direita
+     *  ou seja uma rotação possitiva, quando olhar de cima será visto um movimento antihorario
+     * **/
     float radianAngle = -1*rotationAngle * M_PI / 180.0f; 
 
     x += speed * cos(radianAngle) * 0.1f; 

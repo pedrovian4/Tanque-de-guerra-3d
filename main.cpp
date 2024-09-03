@@ -18,6 +18,7 @@ Scene scene;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     if (height == 0) height = 1;
+
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -26,8 +27,8 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void motions(GLFWwindow* window, Tank& tank) {
-    float rotationSpeed = 1.0f; // Velocidade de rotação para a câmera
-    float turretRotationStep = 3.0f; // Velocidade de rotação da torreta
+    float rotationSpeed = 1.0f; 
+    float turretRotationStep = 3.0f; 
 
     // Controle da câmera com as setas
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
