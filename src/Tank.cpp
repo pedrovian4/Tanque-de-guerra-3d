@@ -70,3 +70,7 @@ float Tank::getX() const {
 float Tank::getZ() const {
     return z;
 }
+
+float Tank::getY() const {
+    return y;
+}

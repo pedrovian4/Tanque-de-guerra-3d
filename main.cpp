@@ -7,18 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "Tank.hpp"
 
-
-
-float cameraDistance = 5.0f;
-float cameraYRotation = 0.0f;
-float cameraXRotation = 20.0f;
-float lastMouseX, lastMouseY;
-bool firstMouse = true;
+float cameraDistance = 10.0f; 
+float cameraHeight = 2.3f;    
 Scene scene;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     if (height == 0) height = 1;
-
     glViewport(0, 0, width, height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -27,64 +21,40 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 }
 
 void motions(GLFWwindow* window, Tank& tank) {
-    float rotationSpeed = 1.0f; 
-    float turretRotationStep = 3.0f; 
-
-    // Controle da câmera com as setas
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-        cameraXRotation -= rotationSpeed;
-        if (cameraXRotation < -89.0f) {
-            cameraXRotation = -89.0f;
-        }
-    }
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-        cameraXRotation += rotationSpeed;
-        if (cameraXRotation > 89.0f) {
-            cameraXRotation = 89.0f;
-        }
-    }
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-        cameraYRotation -= rotationSpeed;
-    }
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-        cameraYRotation += rotationSpeed;
-    }
-
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        tank.move(1.0f); // Move para frente
+        tank.move(1.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        tank.move(-1.0f); // Move para trás
+        tank.move(-1.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        tank.rotate(-1.0f); // manobra pra direita
+        tank.rotate(-1.0f);
     }
-
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        tank.rotate(2.0f); // manobra pra esquerda
+        tank.rotate(2.0f);
     }
-
     glfwPostEmptyEvent();
 }
 
+void updateCameraPosition(float &cameraX, float &cameraY, float &cameraZ, Tank& tank) {
+    float tankX = tank.getX();
+    float tankZ = tank.getZ();
+    
+    float turretRotation = tank.getTurretRotation();
 
-
-void updateCameraPosition(float &cameraX, float &cameraY, float &cameraZ) {
-    cameraX = cameraDistance * cos(glm::radians(cameraXRotation)) * cos(glm::radians(cameraYRotation));
-    cameraY = cameraDistance * sin(glm::radians(cameraXRotation)) - 0.1 ;
-    cameraZ = cameraDistance * cos(glm::radians(cameraXRotation)) * sin(glm::radians(cameraYRotation));
+    cameraX = tankX - cameraDistance * cos(glm::radians(turretRotation));  
+    cameraY = tank.getY() + cameraHeight;                                  
+    cameraZ = tankZ - cameraDistance * sin(glm::radians(turretRotation));  
 }
 
 void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    static float lastX = 400, lastY = 300; 
+    static float lastX = 400, lastY = 300;
     float offsetX = xpos - lastX;
     lastX = xpos;
     lastY = ypos;
-
-    float sensitivity = 0.1f; 
+    float sensitivity = 0.1f;
+    
     float rotationChange = offsetX * sensitivity;
-
     
     scene.tank.setTurretRotation(scene.tank.getTurretRotation() + rotationChange);
 }
@@ -97,7 +67,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         scene.tank.moveTo(targetX, targetZ);
     }
 }
-
 
 int main() {
     if (!glfwInit()) {
@@ -121,27 +90,28 @@ int main() {
     glfwSetCursorPosCallback(window, mouse_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
 
-
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cerr << "Falha ao inicializar GLAD" << std::endl;
         return -1;
     }
 
     glEnable(GL_DEPTH_TEST);
-
     framebuffer_size_callback(window, 800, 600);
 
-    
     while (!glfwWindowShouldClose(window)) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        motions(window, scene.tank); 
-        float cameraX, cameraY, cameraZ;
-        updateCameraPosition(cameraX, cameraY, cameraZ);
-        glLoadIdentity();
-        gluLookAt(cameraX, cameraY, cameraZ,
-                  0.0, 0.0, 0.0,
-                  0.0, 1.0, 0.0);
+        motions(window, scene.tank);
 
+        float cameraX, cameraY, cameraZ;
+        updateCameraPosition(cameraX, cameraY, cameraZ, scene.tank);
+
+        glLoadIdentity();
+        
+        float targetX = scene.tank.getX() + cos(glm::radians(scene.tank.getTurretRotation())) * 100.0f; 
+        float targetZ = scene.tank.getZ() + sin(glm::radians(scene.tank.getTurretRotation())) * 100.0f; 
+        
+        gluLookAt(cameraX, cameraY, cameraZ, targetX, cameraY, targetZ, 0.0, 1.0, 0.0);
+        
         scene.draw();
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -15,7 +15,9 @@ public:
 
     float getTurretRotation() const; 
     float getX() const; 
-    float getZ() const; 
+    float getZ() const;
+    float getY() const; 
+    float wheelRotation; 
 
 
 private:
@@ -24,5 +26,4 @@ private:
     float x, y, z; 
     float rotationAngle; 
     float speed; 
-    float wheelRotation; 
 };
