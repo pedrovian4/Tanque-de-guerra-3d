@@ -53,6 +53,14 @@ void motions(GLFWwindow* window, Tank& tank) {
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
         tank.rotate(2.0f);
     }
+
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS) {
+        if(tank.rotationGrau == 0.0){
+            tank.rotationGrau = 0.5f;
+        }else{
+            tank.rotationGrau = 0.0f;            
+        }
+    }
     if (checkCollisionWithTrees(tank.getX(), tank.getZ(), 1.5f)) {
         tank.setPositions(prevX, prevZ);
     }

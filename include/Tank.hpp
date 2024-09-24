@@ -18,7 +18,8 @@ public:
     float getZ() const;
     float getY() const;
     void setPositions(float x, float z); 
-    float wheelRotation; 
+    float wheelRotation;
+    float rotationGrau = 0.0f;
     Turret turret;
     Track track;
 
