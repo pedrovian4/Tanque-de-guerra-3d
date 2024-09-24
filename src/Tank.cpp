@@ -11,7 +11,7 @@ void Tank::draw() {
     glTranslatef(x, y, z); 
     // Rotação usando quaternions
     glRotatef(rotationAngle, 0.0f, 1.0f, 0.0f); 
-    Helpers::drawParallelepiped(0.0f, 0.1f, 0.0f,// RGB 
+    Helpers::drawParallelepiped(0.1f, 0.3f, 0.1f,// RGB 
     0.0f, -0.2f, 0.0f, // X,Y,Z
     2.0f, 0.5f, 1.0f); // largura, altura e escala
 
