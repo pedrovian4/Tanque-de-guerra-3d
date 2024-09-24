@@ -74,3 +74,8 @@ float Tank::getZ() const {
 float Tank::getY() const {
     return y;
 }
+
+void Tank::setPositions(float newX, float newZ) {
+    x = newX;
+    z = newZ;
+}

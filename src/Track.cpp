@@ -5,7 +5,9 @@
 Track::Track() : speed(0.0f) {}
 
 void Track::draw(float wheelRotation) {
-
+    
+    glBindTexture(GL_TEXTURE_2D, this->wheelTexture);
+    // Desenhar a parte reta da esteira (Paralelepípedo)
     Helpers::drawParallelepiped(0.0f, 0.4f, 0.1f, // RGB
                                 0.0f, -0.55f, 0.0f,  //X,Y,Z
                                 2.5f, 0.2f, 1.2f);  // Largura, altura e escala
@@ -22,18 +24,21 @@ void Track::draw(float wheelRotation) {
         float wheelXPos = -1.0f + i * spacing;  // Calcula a posição X de cada roda
         glPushMatrix();
         glTranslatef(wheelXPos, wheelYPos, -wheelZOffset - 0.1);
-        glRotatef(wheelRotation, 0.0f, 0.0f, 0.1f); // Rotaciona as rodas, não consegui fazer as listras pra isso funcionar
-        Helpers::drawCylinderWithStripes(0.4f, 0.4f, 0.4f, 0.0f, 0.0f, 0.0f, wheelRadius, wheelWidth, 1.0f, 1.0f);
+        glRotatef(wheelRotation, 0.0f, 0.0f, -1.0f);  // Rotaciona as rodas em torno do eixo Z
+        glBindTexture(GL_TEXTURE_2D, this->wheelTexture); 
+        Helpers::drawCylinderWithTexture(this->wheelTexture, wheelRadius, wheelWidth, 32, 32);
         glPopMatrix();
     }
 
     // Desenhar rodas no lado direito da esteira
     for (int i = 0; i < numWheels; ++i) {
-        float wheelXPos = -1.0f + i * spacing;  
+        float wheelXPos = -1.0f + i * spacing;
         glPushMatrix();
         glTranslatef(wheelXPos, wheelYPos, wheelZOffset);
-        glRotatef(wheelRotation, 0.0f, 0.0f, 0.1f);
-        Helpers::drawCylinderWithStripes(0.4f, 0.4f, 0.4f, 0.0f, 0.0f, 0.0f, wheelRadius, wheelWidth, 1.0f, 1.0f);
+        glRotatef(wheelRotation, 0.0f, 0.0f, -1.0f);  // Rotaciona as rodas em torno do eixo Z
+
+        glBindTexture(GL_TEXTURE_2D, this->wheelTexture); 
+        Helpers::drawCylinderWithTexture(this->wheelTexture, wheelRadius, wheelWidth, 32, 32);
         glPopMatrix();
     }
 }

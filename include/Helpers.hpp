@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/glad.h>
+
 class Helpers {
 public:
     /***
@@ -22,4 +24,8 @@ public:
     static void drawCylinderWithHole(float r, float g, float b, float x, float y, float z, float radius, float height, float scaleX, float scaleZ);
 
     static void drawCylinderWithStripes(float r, float g, float b, float x, float y, float z, float radius, float height, float scaleX, float scaleZ);
+
+    static void drawTexturedParallelepiped(GLuint texture, float x, float y, float z, float width, float height, float depth); 
+
+        static void drawCylinderWithTexture(GLuint texture, float radius, float height, int slices, int stacks);
 };

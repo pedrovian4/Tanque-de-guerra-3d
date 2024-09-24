@@ -16,13 +16,13 @@ public:
     float getTurretRotation() const; 
     float getX() const; 
     float getZ() const;
-    float getY() const; 
+    float getY() const;
+    void setPositions(float x, float z); 
     float wheelRotation; 
-
-
-private:
     Turret turret;
     Track track;
+
+private:
     float x, y, z; 
     float rotationAngle; 
     float speed; 
